@@ -1,26 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<layout
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    >
-
-    <data>
-        <variable
-            name="tv1"
-            type="com.example.user.androidx.ModelData"/>
-
-    </data>
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".MainActivity"
-    >
+    tools:context=".MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
@@ -28,22 +11,4 @@
         android:layout_height="200dp"
         />
 
-    <TextView
-        android:id="@+id/tv1"
-        android:layout_width="match_parent"
-        android:layout_height="16dp"
-        android:text="@{tv1.celsius}"
-        app:layout_constraintBottom_toBottomOf="@+id/recyclerview"
-        />
-
-    <EditText
-        android:id="@+id/et1"
-        android:layout_width="match_parent"
-        android:layout_height="16dp"
-        android:text="@={tv1.celsius}"
-        app:layout_constraintBottom_toBottomOf="@+id/tv1"
-        />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-</layout>
+</LinearLayout>
