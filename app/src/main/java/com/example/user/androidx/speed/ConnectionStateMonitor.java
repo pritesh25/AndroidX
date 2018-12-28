@@ -1,7 +1,8 @@
-package com.example.user.androidx;
+package com.example.user.androidx.speed;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.net.LinkProperties;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
@@ -49,6 +50,20 @@ public class ConnectionStateMonitor extends ConnectivityManager.NetworkCallback 
     public void onUnavailable() {
         super.onUnavailable();
         Log.d(TAG,"onUnavailable");
+    }
+
+    @Override
+    public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
+        super.onCapabilitiesChanged(network, networkCapabilities);
+        Log.d(TAG,"onCapabilitiesChanged");
+        Log.d(TAG,"Upload   = "+networkCapabilities.getLinkUpstreamBandwidthKbps()+" kbps");
+        Log.d(TAG,"Download = "+networkCapabilities.getLinkDownstreamBandwidthKbps()+" kbps");
+    }
+
+    @Override
+    public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
+        super.onLinkPropertiesChanged(network, linkProperties);
+        Log.d(TAG,"onLinkPropertiesChanged");
     }
 
     public interface NetworkCallBack {

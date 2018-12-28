@@ -1,21 +1,21 @@
 package com.example.user.androidx;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.user.androidx.speed.ConnectionStateMonitor;
+import com.example.user.androidx.speed.ITrafficSpeedListener;
+import com.example.user.androidx.speed.TrafficSpeedMeasurer;
+import com.example.user.androidx.speed.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +33,9 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
     private RecyclerViewAdapter recyclerViewAdapter;
     private String[] data = {"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"};
 
+
+    private static final boolean SHOW_SPEED_IN_BITS = false;
+    private TrafficSpeedMeasurer mTrafficSpeedMeasurer;
     private TextView tv_network;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -52,21 +55,11 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
 
         tv_network = findViewById(R.id.tv_network);
 
-        /*
-        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        Log.d(TAG,"active network ="+cm.getActiveNetwork());
-        Log.d(TAG,"network info   ="+cm.getActiveNetwork());
-
-        for(int i = 0 ; i<cm.getAllNetworks().length;i++)
-        {
-            Log.d(TAG,"i = "+cm.getActiveNetwork());
-        }
-
-
-        Log.d(TAG,"type = "+Connectivity.getNetworkInfo(getApplicationContext()).toString());
-        */
-
+        //check for connection
         new ConnectionStateMonitor(this).enable(getApplicationContext());
+        //monitor the speed
+        mTrafficSpeedMeasurer = new TrafficSpeedMeasurer(TrafficSpeedMeasurer.TrafficType.ALL);
+        mTrafficSpeedMeasurer.startMeasuring();
 
     }
 
@@ -108,5 +101,38 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
     public void onDisconnected() {
         Log.d(TAG,"onDisconnected");
         Toast.makeText(getApplicationContext(),"onDisconnected",Toast.LENGTH_LONG).show();
+    }
+
+    private ITrafficSpeedListener mStreamSpeedListener = new ITrafficSpeedListener() {
+
+        @Override
+        public void onTrafficSpeedMeasured(final double upStream, final double downStream) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    String upStreamSpeed = Utils.parseSpeed(upStream, SHOW_SPEED_IN_BITS);
+                    String downStreamSpeed = Utils.parseSpeed(downStream, SHOW_SPEED_IN_BITS);
+                    tv_network.setText("Up Stream Speed: " + upStreamSpeed + "\n" + "Down Stream Speed: " + downStreamSpeed);
+                }
+            });
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mTrafficSpeedMeasurer.stopMeasuring();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mTrafficSpeedMeasurer.removeListener(mStreamSpeedListener);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mTrafficSpeedMeasurer.registerListener(mStreamSpeedListener);
     }
 }
