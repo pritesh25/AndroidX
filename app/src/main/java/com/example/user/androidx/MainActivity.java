@@ -12,6 +12,10 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
     private static boolean wifiConnected = false;
     private static boolean mobileConnected = false;
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,12 +55,28 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
 
         List<AppList> installedApps = getInstalledApps();
 
+        CustomListAdapter adapter = new CustomListAdapter(this,installedApps);
+        GridView gridView  = (GridView) findViewById(R.id.gridView);
+        gridView.setAdapter(adapter);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // set an Intent to Another Activity
+                //Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+                //intent.putExtra("image", logos[position]); // put image data in Intent
+                //startActivity(intent); // start Intent
+            }
+        });
+
+        /*
         recyclerview = findViewById(R.id.recyclerview);
         recyclerview.setHasFixedSize(true);
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
 
         recyclerViewAdapter = new RecyclerViewAdapter(this,installedApps);
         recyclerview.setAdapter(recyclerViewAdapter);
+        */
 
         tv_network = findViewById(R.id.tv_network);
 
