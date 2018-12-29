@@ -48,6 +48,12 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
     private static boolean wifiConnected = false;
     private static boolean mobileConnected = false;
 
+    //how is this ?
+
+
+
+    //pritesh patil from nandurbar
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,10 +61,25 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
 
         List<AppList> installedApps = getInstalledApps();
 
+        gridViewSetup(installedApps);
+
+        //recyclerViewSetup(installedApps);
+
+        tv_network = findViewById(R.id.tv_network);
+
+        //check for connection
+        new ConnectionStateMonitor(this).enable(getApplicationContext());
+        //monitor the speed
+        mTrafficSpeedMeasurer = new TrafficSpeedMeasurer(TrafficSpeedMeasurer.TrafficType.ALL);
+        mTrafficSpeedMeasurer.startMeasuring();
+
+    }
+
+    private void gridViewSetup(List<AppList> installedApps) {
+
         CustomListAdapter adapter = new CustomListAdapter(this,installedApps);
         GridView gridView  = (GridView) findViewById(R.id.gridView);
         gridView.setAdapter(adapter);
-
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -69,23 +90,16 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
             }
         });
 
-        /*
-        recyclerview = findViewById(R.id.recyclerview);
-        recyclerview.setHasFixedSize(true);
-        recyclerview.setLayoutManager(new LinearLayoutManager(this));
+    }
 
-        recyclerViewAdapter = new RecyclerViewAdapter(this,installedApps);
-        recyclerview.setAdapter(recyclerViewAdapter);
-        */
-
-        tv_network = findViewById(R.id.tv_network);
-
-        //check for connection
-        new ConnectionStateMonitor(this).enable(getApplicationContext());
-        //monitor the speed
-        mTrafficSpeedMeasurer = new TrafficSpeedMeasurer(TrafficSpeedMeasurer.TrafficType.ALL);
-        mTrafficSpeedMeasurer.startMeasuring();
-
+    private void recyclerViewSetup(List<AppList> installedApps)
+    {
+//        recyclerview = findViewById(R.id.recyclerview);
+//        recyclerview.setHasFixedSize(true);
+//        recyclerview.setLayoutManager(new LinearLayoutManager(this));
+//
+//        recyclerViewAdapter = new RecyclerViewAdapter(this,installedApps);
+//        recyclerview.setAdapter(recyclerViewAdapter);
     }
 
     private List<AppList> getInstalledApps() {
