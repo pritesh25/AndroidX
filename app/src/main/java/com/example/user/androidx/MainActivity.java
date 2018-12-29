@@ -1,11 +1,14 @@
 package com.example.user.androidx;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,6 +40,9 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
     private static final boolean SHOW_SPEED_IN_BITS = false;
     private TrafficSpeedMeasurer mTrafficSpeedMeasurer;
     private TextView tv_network;
+
+    private static boolean wifiConnected = false;
+    private static boolean mobileConnected = false;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -95,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
     public void onConnected() {
         Log.d(TAG,"onConnected");
         Toast.makeText(getApplicationContext(),"onConnected",Toast.LENGTH_LONG).show();
+        checkNetworkConnection();
     }
 
     @Override
@@ -134,5 +141,24 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
     protected void onResume() {
         super.onResume();
         mTrafficSpeedMeasurer.registerListener(mStreamSpeedListener);
+    }
+
+    private void checkNetworkConnection() {
+        // BEGIN_INCLUDE(connect)
+        ConnectivityManager connMgr =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
+        if (activeInfo != null && activeInfo.isConnected()) {
+            wifiConnected = activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
+            mobileConnected = activeInfo.getType() == ConnectivityManager.TYPE_MOBILE;
+            if(wifiConnected) {
+                Log.d(TAG, getResources().getString(R.string.wifi_connection));
+            } else if (mobileConnected){
+                Log.d(TAG, getResources().getString(R.string.mobile_connection));
+            }
+        } else {
+            Log.i(TAG, getString(R.string.no_wifi_or_mobile));
+        }
+        // END_INCLUDE(connect)
     }
 }

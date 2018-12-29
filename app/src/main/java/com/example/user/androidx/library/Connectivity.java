@@ -1,4 +1,4 @@
-package com.example.user.androidx;
+package com.example.user.androidx.library;
 
 /*
  * Copyright (c) 2017 Emil Davtyan
