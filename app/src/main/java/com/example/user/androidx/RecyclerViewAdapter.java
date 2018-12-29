@@ -1,11 +1,17 @@
 package com.example.user.androidx;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.user.androidx.library.SqaureImageView;
 
 import java.util.List;
 
@@ -38,6 +44,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         {
             MyViewHolder holder1 = (MyViewHolder)holder;
             holder1.text.setText(data.get(position).getName());
+            holder1.icon.setImageDrawable(data.get(position).getIcon());
         }
     }
 
@@ -50,10 +57,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private class MyViewHolder extends RecyclerView.ViewHolder {
 
         private TextView text;
+        private SqaureImageView icon;
 
         public MyViewHolder(View view) {
             super(view);
             text = view.findViewById(R.id.text);
+            icon = view.findViewById(R.id.icon);
         }
     }
+
 }

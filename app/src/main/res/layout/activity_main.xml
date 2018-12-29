@@ -21,13 +21,13 @@
 
     </LinearLayout>
 
-    <!--<androidx.recyclerview.widget.RecyclerView-->
-        <!--android:id="@+id/recyclerview"-->
-        <!--android:visibility="gone"-->
-        <!--android:layout_below="@+id/topLayout"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--/>-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:visibility="visible"
+        android:layout_below="@+id/topLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 
     <!--<androidx.core.widget.ContentLoadingProgressBar-->
         <!--android:id="@+id/progress"-->
@@ -37,16 +37,16 @@
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content" />-->
 
-    <GridView
-        android:id="@+id/gridView"
-        android:numColumns="auto_fit"
-        android:columnWidth="45dp"
-        android:horizontalSpacing="10dp"
-        android:verticalSpacing="10dp"
-        android:gravity="center"
-        android:stretchMode="columnWidth"
-        android:layout_below="@+id/topLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></GridView>
+    <!--<GridView-->
+        <!--android:id="@+id/gridView"-->
+        <!--android:numColumns="auto_fit"-->
+        <!--android:columnWidth="45dp"-->
+        <!--android:horizontalSpacing="10dp"-->
+        <!--android:verticalSpacing="10dp"-->
+        <!--android:gravity="center"-->
+        <!--android:stretchMode="columnWidth"-->
+        <!--android:layout_below="@+id/topLayout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"></GridView>-->
 
 </RelativeLayout>

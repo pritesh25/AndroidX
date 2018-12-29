@@ -11,8 +11,10 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -25,6 +27,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.user.androidx.library.ItemOffsetDecoration;
+import com.example.user.androidx.library.UtilityRecyclerViewColumn;
 import com.example.user.androidx.speed.ConnectionStateMonitor;
 import com.example.user.androidx.speed.ITrafficSpeedListener;
 import com.example.user.androidx.speed.TrafficSpeedMeasurer;
@@ -35,6 +39,7 @@ import java.util.List;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -59,15 +64,15 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //List<AppList> installedApps = getInstalledApps();
+        List<AppList> installedApps = getInstalledApps();
 
         //gridViewSetup(installedApps);
 
-        //recyclerViewSetup(installedApps);
+        recyclerViewSetup(installedApps);
 
-        //networkMonitor();
+        networkMonitor();
 
-        statusBarExample();
+        //statusBarExample();
 
     }
 
@@ -116,28 +121,31 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
 
     private void gridViewSetup(List<AppList> installedApps) {
 
-        CustomListAdapter adapter = new CustomListAdapter(this, installedApps);
-        GridView gridView = (GridView) findViewById(R.id.gridView);
-        gridView.setAdapter(adapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // set an Intent to Another Activity
-                //Intent intent = new Intent(MainActivity.this, SecondActivity.class);
-                //intent.putExtra("image", logos[position]); // put image data in Intent
-                //startActivity(intent); // start Intent
-            }
-        });
+//        CustomListAdapter adapter = new CustomListAdapter(this, installedApps);
+//        GridView gridView = (GridView) findViewById(R.id.gridView);
+//        gridView.setAdapter(adapter);
+//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                // set an Intent to Another Activity
+//                //Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+//                //intent.putExtra("image", logos[position]); // put image data in Intent
+//                //startActivity(intent); // start Intent
+//            }
+//        });
 
     }
 
     private void recyclerViewSetup(List<AppList> installedApps) {
-//        recyclerview = findViewById(R.id.recyclerview);
-//        recyclerview.setHasFixedSize(true);
-//        recyclerview.setLayoutManager(new LinearLayoutManager(this));
-//
-//        recyclerViewAdapter = new RecyclerViewAdapter(this,installedApps);
-//        recyclerview.setAdapter(recyclerViewAdapter);
+
+        recyclerview = findViewById(R.id.recyclerview);
+        recyclerview.setHasFixedSize(true);
+        recyclerview.addItemDecoration(new ItemOffsetDecoration(getApplicationContext(),R.dimen.ten));
+        recyclerview.setLayoutManager(new GridLayoutManager(getApplicationContext(),UtilityRecyclerViewColumn.calculateNoOfColumns(getApplicationContext())));
+
+
+        recyclerViewAdapter = new RecyclerViewAdapter(this,installedApps);
+        recyclerview.setAdapter(recyclerViewAdapter);
     }
 
     private List<AppList> getInstalledApps() {
@@ -151,9 +159,10 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
         for (int i = 0; i < packs.size(); i++) {
             ResolveInfo p = packs.get(i);
 
-            String appName = p.activityInfo.loadLabel(getPackageManager()).toString();
-            Drawable icon = p.activityInfo.loadIcon(getPackageManager());
-            res.add(new AppList(appName, icon));
+            String appName      = p.activityInfo.loadLabel(getPackageManager()).toString();
+            String appPkgName   = p.activityInfo.packageName;
+            Drawable icon       = p.activityInfo.loadIcon(getPackageManager());
+            res.add(new AppList(appName,appPkgName,icon));
 
 //            if ((isSystemPackage(p) == true)) {
 //                String appName = p.activityInfo.loadLabel(getPackageManager()).toString();
@@ -231,5 +240,39 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
             Log.i(TAG, getString(R.string.no_wifi_or_mobile));
         }
         // END_INCLUDE(connect)
+    }
+
+    private void appUninstall(String packageName)
+    {
+        try
+        {
+            Intent intentUninstalled = new Intent(Intent.ACTION_DELETE);
+            intentUninstalled.setData(Uri.parse("package:"+packageName));
+            startActivity(intentUninstalled);
+        }
+        catch (Exception e)
+        {
+            Log.d(TAG,"(onAppLongClick) app uninstall , catch error = "+ e.getMessage());
+        }
+    }
+
+    private void appInfo(String packageName)
+    {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package",packageName, null);
+        intent.setData(uri);
+        startActivity(intent);
+    }
+
+    private void appLaunch(String packageName)
+    {
+        Intent launchIntent = getPackageManager().getLaunchIntentForPackage(packageName);
+        startActivity(launchIntent);
+    }
+
+    private void appAddToDock()
+    {
+
     }
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="dock_height">60dp</dimen>
+
+    <dimen name="spacing" >1dp</dimen>
+    <dimen name="two" >2dp</dimen>
+    <dimen name="textview" >12sp</dimen>
+    <dimen name="padding" >1dp</dimen>
+    <dimen name="five" >5dp</dimen>
+    <dimen name="ten" >10dp</dimen>
+    <dimen name="twenty" >20dp</dimen>
+    <dimen name="fifty" >50dp</dimen>
+    <dimen name="actionBar" >56dp</dimen>
+    <dimen name="twenty_five">25dp</dimen>
+    <dimen name="twenty_six">26dp</dimen>
+    <dimen name="twenty_seven">27dp</dimen>
+
+</resources>
