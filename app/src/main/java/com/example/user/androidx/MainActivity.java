@@ -1,6 +1,5 @@
 package com.example.user.androidx;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -12,23 +11,18 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.androidx.library.ItemOffsetDecoration;
-import com.example.user.androidx.library.MyObserver;
+import com.example.user.androidx.library.MainActivityViewModel;
 import com.example.user.androidx.library.UtilityRecyclerViewColumn;
 import com.example.user.androidx.speed.ConnectionStateMonitor;
 import com.example.user.androidx.speed.ITrafficSpeedListener;
@@ -38,10 +32,9 @@ import com.example.user.androidx.speed.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends AppCompatActivity implements ConnectionStateMonitor.NetworkCallBack {
@@ -54,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
 
     private static final boolean SHOW_SPEED_IN_BITS = false;
     private TrafficSpeedMeasurer mTrafficSpeedMeasurer;
-    private TextView tv_network;
+    private TextView tv_network,tv_viewmodel;
 
     private static boolean wifiConnected = false;
     private static boolean mobileConnected = false;
@@ -64,20 +57,30 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d(TAG,"onCreate Activity");
+        //Log.d(TAG,"onCreate Activity");
 
-        List<AppList> installedApps = getInstalledApps();
+        //List<AppList> installedApps = getInstalledApps();
 
         //gridViewSetup(installedApps);
 
-        recyclerViewSetup(installedApps);
+        //recyclerViewSetup(installedApps);
 
         networkMonitor();
 
         //statusBarExample();
 
-        getLifecycle().addObserver(new MyObserver());
+        //getLifecycle().addObserver(new MyObserver());
 
+        ViewModelSetup();
+
+    }
+
+    private void ViewModelSetup() {
+
+        tv_viewmodel = findViewById(R.id.tv_viewmodel);
+        MainActivityViewModel generator = ViewModelProviders.of(this).get(MainActivityViewModel.class);
+        //tv_viewmodel.setText(new MainActivityViewModel().getNumber());
+        tv_viewmodel.setText(generator.getNumber());
     }
 
     private void statusBarExample() {
