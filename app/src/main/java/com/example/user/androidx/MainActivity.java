@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.androidx.library.ItemOffsetDecoration;
+import com.example.user.androidx.library.MyObserver;
 import com.example.user.androidx.library.UtilityRecyclerViewColumn;
 import com.example.user.androidx.speed.ConnectionStateMonitor;
 import com.example.user.androidx.speed.ITrafficSpeedListener;
@@ -43,10 +44,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-@SuppressLint("NewApi")
 public class MainActivity extends AppCompatActivity implements ConnectionStateMonitor.NetworkCallBack {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private  final String TAG = "tag";//MainActivity.class.getSimpleName();
     private RecyclerView recyclerview;
     private RecyclerViewAdapter recyclerViewAdapter;
     private String[] data = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"};
@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.d(TAG,"onCreate Activity");
+
         List<AppList> installedApps = getInstalledApps();
 
         //gridViewSetup(installedApps);
@@ -73,6 +75,8 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
         networkMonitor();
 
         //statusBarExample();
+
+        getLifecycle().addObserver(new MyObserver());
 
     }
 
@@ -179,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
 
     @Override
     public void onConnected() {
-        Log.d(TAG, "onConnected");
+        //Log.d(TAG, "onConnected");
         Toast.makeText(getApplicationContext(), "onConnected", Toast.LENGTH_LONG).show();
         checkNetworkConnection();
     }
@@ -206,21 +210,36 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
     };
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mTrafficSpeedMeasurer.stopMeasuring();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mTrafficSpeedMeasurer.removeListener(mStreamSpeedListener);
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG,"onStart Activity");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG,"onResume Activity");
         mTrafficSpeedMeasurer.registerListener(mStreamSpeedListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG,"onPause Activity");
+        mTrafficSpeedMeasurer.removeListener(mStreamSpeedListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG,"onStop Activity");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG,"onDestroy Activity");
+        mTrafficSpeedMeasurer.stopMeasuring();
     }
 
     private void checkNetworkConnection() {
@@ -232,9 +251,9 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
             wifiConnected = activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
             mobileConnected = activeInfo.getType() == ConnectivityManager.TYPE_MOBILE;
             if (wifiConnected) {
-                Log.d(TAG, getResources().getString(R.string.wifi_connection));
+                //Log.d(TAG, getResources().getString(R.string.wifi_connection));
             } else if (mobileConnected) {
-                Log.d(TAG, getResources().getString(R.string.mobile_connection));
+                //Log.d(TAG, getResources().getString(R.string.mobile_connection));
             }
         } else {
             Log.i(TAG, getString(R.string.no_wifi_or_mobile));
