@@ -3,28 +3,30 @@ package com.example.user.androidx.library;
 import android.util.Log;
 import java.util.Random;
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class MainActivityViewModel extends ViewModel {
 
     private final String TAG = this.getClass().getSimpleName();
-    private String myRandomNumber;
+    private MutableLiveData<String> myRandomNumber;
 
-    public String getNumber()
+    public MutableLiveData<String> getNumber()
     {
         Log.i(TAG,"Get Number");
         if(myRandomNumber == null)
         {
+            myRandomNumber = new MutableLiveData<>();
             createNumber();
         }
         return myRandomNumber;
     }
 
-    private void createNumber() {
+    public void createNumber() {
 
         Log.i(TAG,"createNumber");
         Random random = new Random();
-        myRandomNumber = "Number :"+(random.nextInt(10-1));
+        myRandomNumber.setValue("Number :"+(random.nextInt(10-1)));
 
     }
 

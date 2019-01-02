@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -33,6 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -78,9 +81,23 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
     private void ViewModelSetup() {
 
         tv_viewmodel = findViewById(R.id.tv_viewmodel);
-        MainActivityViewModel generator = ViewModelProviders.of(this).get(MainActivityViewModel.class);
-        //tv_viewmodel.setText(new MainActivityViewModel().getNumber());
-        tv_viewmodel.setText(generator.getNumber());
+        //tv_viewmodel.setText(new MainActivityViewModel().getNumber());//normal model
+        final MainActivityViewModel generator = ViewModelProviders.of(this).get(MainActivityViewModel.class);//viewmodel example
+        LiveData<String> myRandomNumber = generator.getNumber();
+        myRandomNumber.observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                tv_viewmodel.setText(s);
+            }
+        });
+
+        tv_viewmodel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                generator.createNumber();
+            }
+        });
+
     }
 
     private void statusBarExample() {
