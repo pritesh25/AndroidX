@@ -74,29 +74,29 @@ public class MainActivity extends AppCompatActivity implements ConnectionStateMo
 
         //getLifecycle().addObserver(new MyObserver());
 
-        ViewModelSetup();
+        ViewModelwithLiveDataSetup();
 
     }
 
-    private void ViewModelSetup() {
+    private void ViewModelwithLiveDataSetup() {
 
         tv_viewmodel = findViewById(R.id.tv_viewmodel);
         //tv_viewmodel.setText(new MainActivityViewModel().getNumber());//normal model
         final MainActivityViewModel generator = ViewModelProviders.of(this).get(MainActivityViewModel.class);//viewmodel example
-        LiveData<String> myRandomNumber = generator.getNumber();
+        LiveData<String> myRandomNumber = generator.getNumber();//livedata example
         myRandomNumber.observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
                 tv_viewmodel.setText(s);
             }
-        });
+        });//it is observer to check chnages in the live data
 
         tv_viewmodel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 generator.createNumber();
             }
-        });
+        });//generate new data , will automatically update ui
 
     }
 
